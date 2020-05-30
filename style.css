@@ -1,0 +1,85 @@
+  :root {
+    --b: #000;
+    --g: #888;
+    --w: #fff
+  }
+
+  body {
+    font      : 400 20px/1.62 Inter, sans-serif;
+    padding   : 2rem;
+    background: var(--w);
+    color     : var(--b);
+  }
+
+  input,
+  button {
+    font: inherit
+  }
+
+  .container {
+    display              : grid;
+    grid-template-columns: 1fr 4fr;
+    /* max-width         : 80ch */
+  }
+
+  .db {
+    display: block
+  }
+
+  .mbh {
+    margin: 0 0 .5rem
+  }
+
+  .mb1 {
+    margin: 0 0 1rem
+  }
+
+  .mb2 {
+    margin: 0 0 2rem
+  }
+
+  .completed {
+    text-decoration: line-through;
+    color: var(--g);
+  }
+
+  .g,
+  pre {
+    color: var(--g)
+  }
+
+  img {
+    width          : 100%;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: pixelated
+  }
+
+  a,
+  a:visited {
+    color                : var(--b);
+    text-decoration-color: var(--g)
+  }
+
+  a:hover {
+    text-decoration-color: var(--b)
+  }
+
+  pre,
+  ul,
+  ol,
+  blockquote {
+    margin : 0;
+    padding: 0 1rem
+  }
+
+  pre {
+    white-space: pre-wrap
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --b: #fff;
+      --g: #888;
+      --w: #000
+    }
+  }
