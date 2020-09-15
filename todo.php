@@ -37,31 +37,36 @@ class Shigoto
             preg_match('/(?:[xX]\s(\d{4}-\d{2}-\d{2})\s)/', $line, $completed);
             if (!empty($completed)) {
                 $this->_todo_parsed[$counter]['completed'] = $completed[1];
-                // $line = substr($line, strlen($completed[0]));
                 $line = str_replace($completed[0], '', $line);
             }
             preg_match('/(?:due:(\d{4}-\d{2}-\d{2}))/', $line, $due);
             if (!empty($due)) {
                 $this->_todo_parsed[$counter]['due'] = $due[1];
-                // $line = str_replace($due[0], '', $line);
                 $line = str_replace($due[0], '', $line);
+            }
+            preg_match('/(?:track:([0-9.]+))/', $line, $track);
+            if (!empty($track)) {
+                $this->_todo_parsed[$counter]['track'] = $track[1];
+                $line = str_replace($track[0], '', $line);
+            }
+            preg_match('/(?:total:([0-9.]+))/', $line, $total);
+            if (!empty($total)) {
+                $this->_todo_parsed[$counter]['total'] = $total[1];
+                $line = str_replace($total[0], '', $line);
             }
             preg_match('/(\d{4}-\d{2}-\d{2}\s)/', $line, $created);
             if (!empty($created)) {
                 $this->_todo_parsed[$counter]['created'] = $created[1];
-                // $line = substr($line, strlen($created[0]));
                 $line = str_replace($created[0], '', $line);
             }
             preg_match('/(?:\(([A-Z])\))/', $line, $priority);
             if (!empty($priority)) {
                 $this->_todo_parsed[$counter]['priority'] = $priority[1];
-                // $line = substr($line, strlen($priority[0]));
                 $line = str_replace($priority[0], '', $line);
             }
             preg_match('/(?:\+(\w+))/', $line, $project);
             if (!empty($project)) {
                 $this->_todo_parsed[$counter]['project'] = $project[1];
-                // $line = str_replace($project[0], '', $line);
                 $line = str_replace($project[0], '', $line);
             }
             preg_match('/(?:@(\w+))/', $line, $context);
@@ -175,6 +180,22 @@ class Shigoto
         $this->write_todo($this->_todo_parsed);
     }
 
+    public function track(int $key)
+    {
+        if (isset($this->_todo_parsed[$key]['track'])) {
+            $track = $this->_todo_parsed[$key]['track'];
+            if (!isset($this->_todo_parsed[$key]['total'])) {
+                $this->_todo_parsed[$key]['total'] = 0;
+            }
+            $this->_todo_parsed[$key]['total'] += round(microtime(true) - $track, 2);
+            unset($this->_todo_parsed[$key]['track']);
+        } else {
+            $this->_todo_parsed[$key]['track'] = microtime(true);  
+        }
+        // var_dump($this->_todo_parsed);
+        $this->write_todo($this->_todo_parsed);
+    }
+
     public function get_task(int $key, bool $format = true)
     {
         $task = $this->_todo_parsed[$key];
@@ -188,7 +209,8 @@ class Shigoto
         $project = (isset($task['project'])) ? "+{$task['project']} " : '';
         $context = (isset($task['context'])) ? "@{$task['context']} " : '';
         $due = (isset($task['due'])) ? "due:{$task['due']} " : '';
-        return trim($completed . $created . $priority . $data . $project . $context. $due);
+        $track = (isset($task['track'])) ? "track:{$task['track']} " : '';
+        $total = (isset($task['total'])) ? "total:{$task['total']} " : '';
     }
 
     public function get_task_html(int $key, string $tag = 'li', bool $closing_tag = false)
@@ -206,7 +228,9 @@ class Shigoto
         $project = (isset($task['project'])) ? "<a class='project' href='?project={$task['project']}'>+{$task['project']}</a> " : '';
         $context = (isset($task['context'])) ? "<a class='context' href='?context={$task['context']}'>@{$task['context']}</a> " : '';
         $due = (isset($task['due'])) ? "<span class='due'>due:{$task['due']}</span> " : '';
-        $html .= 'class="' . $classes . '">' . $completed . $created . $priority . $data . $project . $context . $due . (($closing_tag)? '</' . $tag . '>':'');
+        $track = (isset($task['track'])) ? "<span class='g'>tracking</span> " : '';
+        $total = (isset($task['total'])) ? "total:{$task['total']}s " : '';
+        $html .= 'class="' . $classes . '">' . $completed . $created . $priority . $data . $project . $context . $due . $track . $total . (($closing_tag)? '</' . $tag . '>':'');
         return $html;
     }
 

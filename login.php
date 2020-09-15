@@ -2,12 +2,12 @@
 
 define('SHIGOTO', '');
 $config = include 'config.php';
+$pep = include '../pep.php';
 
 session_start();
 $pass = $config->password;
-// $hash = password_hash($pass, PASSWORD_BCRYPT);
 if (isset($_POST['password'])) {
-    if (password_verify($_POST['password'], $pass)) {
+    if (password_verify(hash_hmac("sha256", $_POST['password'], $pep), $pass)) {
         echo 'CORRECT';
         $_SESSION['auth'] = $_SERVER['REQUEST_TIME'];
         header("Location: ./index.php");
