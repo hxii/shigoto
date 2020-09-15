@@ -1,5 +1,7 @@
 <?php
 
+// Shigoto - https://0xff.nu/shigoto
+
 $time = microtime(true);
 session_start();
 
@@ -34,6 +36,11 @@ if (isset($_GET['complete'])) {
 if (isset($_GET['archive'])) {
     $todo->archive($_GET['archive']);
     $todo->parse();
+}
+
+if (isset($_GET['track'])) {
+  $todo->track($_GET['track']);
+  $todo->parse();
 }
 
 ?>
@@ -114,7 +121,10 @@ if (isset($_GET['archive'])) {
             echo '<span class="title db mb2">'.count($list).' tasks</span>';
             echo '<ul class="mb2">';
             foreach ($list as $item) {
-                echo $todo->get_task_html($item).' <a href="index.php?complete=' . $item . '">{X}</a> <a href="index.php?archive=' . $item . '">{A}</a></li>';
+                echo $todo->get_task_html($item).' <a href="index.php?complete=' . $item
+                 . '">{X}</a> <a href="index.php?archive=' . $item . '">{A}</a> ' .
+                 '<a href="?track=' . $item . '">{T}</a>' . 
+                 '</li>';
             }
             echo '</ul>';
         }

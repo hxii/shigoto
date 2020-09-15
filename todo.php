@@ -211,6 +211,7 @@ class Shigoto
         $due = (isset($task['due'])) ? "due:{$task['due']} " : '';
         $track = (isset($task['track'])) ? "track:{$task['track']} " : '';
         $total = (isset($task['total'])) ? "total:{$task['total']} " : '';
+        return trim($completed . $created . $priority . $data . $project . $context . $due . $track . $total);
     }
 
     public function get_task_html(int $key, string $tag = 'li', bool $closing_tag = false)
